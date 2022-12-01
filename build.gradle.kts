@@ -6,11 +6,13 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    testImplementation(kotlin("test"))
+}
+
 tasks {
-    sourceSets {
-        main {
-            java.srcDirs("src")
-        }
+    test {
+        useJUnitPlatform()
     }
 
     wrapper {
