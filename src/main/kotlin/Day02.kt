@@ -35,7 +35,7 @@ internal fun String.updatedScore(): Int {
     return "${opponentChoice.toCode(opponentChoices)} ${myChoice.toCode(myChoices)}".score()
 }
 
-private fun myChoice(opponentChoice: Choice, expectedResult: Result) =  when (expectedResult) {
+private fun myChoice(opponentChoice: Choice, expectedResult: Result) = when (expectedResult) {
     DRAW -> opponentChoice
     WIN -> winner(opponentChoice)
     LOSE -> loser(opponentChoice)
@@ -53,15 +53,15 @@ private fun String.toChoice(map: Map<String, Choice>) = map[this] ?: error("unre
 private fun Choice.toCode(map: Map<String, Choice>) = map.reversed()[this] ?: error("unrecognised choice $this")
 
 private val opponentChoices = mapOf(
-        "A" to ROCK,
-        "B" to PAPER,
-        "C" to SCISSORS,
+    "A" to ROCK,
+    "B" to PAPER,
+    "C" to SCISSORS,
 )
 
 private val myChoices = mapOf(
-        "X" to ROCK,
-        "Y" to PAPER,
-        "Z" to SCISSORS,
+    "X" to ROCK,
+    "Y" to PAPER,
+    "Z" to SCISSORS,
 )
 
 private enum class Result {
@@ -73,9 +73,9 @@ private enum class Choice {
 }
 
 private val winnerMap = mapOf(
-        ROCK to PAPER,
-        SCISSORS to ROCK,
-        PAPER to SCISSORS
+    ROCK to PAPER,
+    SCISSORS to ROCK,
+    PAPER to SCISSORS
 )
 
 private fun winner(choice: Choice) = winnerMap[choice] ?: error("choice not found: $choice")
