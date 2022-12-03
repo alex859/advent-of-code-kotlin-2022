@@ -16,7 +16,7 @@ class Day02Test {
         B Z | 9
         C Z | 6""")
     fun `calculate score for single round`(input: String, expected: Int) {
-        assertEquals(expected, input.score())
+        assertEquals(expected, input.toRound().myScore)
     }
     
     @Test
@@ -27,7 +27,7 @@ class Day02Test {
             C Z
         """.trimIndent()
         
-        assertEquals(15, input.total { it.score() } )
+        assertEquals(15, input.total { it.toRound().myScore } )
     }
 
     @ParameterizedTest(name = "{0} -> {1}")
@@ -42,7 +42,9 @@ class Day02Test {
         B Z | 9
         C Z | 7""")
     fun `calculate score for update rule`(input: String, expected: Int) {
-        assertEquals(expected, input.updatedScore())
+        assertEquals(expected, input.toRoundFixing().toRound().myScore)
     }
 }
+
+
 

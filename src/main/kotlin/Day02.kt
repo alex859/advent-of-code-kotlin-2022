@@ -1,47 +1,99 @@
 import Choice.*
-import Result.*
+import FixedResult.*
 
 fun main() {
     val testInput = readInput("Day02_test.txt")
-    check(testInput.total { it.score() } == 15)
-    check(testInput.total { it.updatedScore() } == 12)
+    check(testInput.total { it.toRound().myScore } == 15)
+    check(testInput.total { it.toRoundFixing().toRound().myScore } == 12)
 
     val input = readInput("Day02.txt")
-    println(input.total { it.score() })
-    println(input.total { it.updatedScore() })
+    println(input.total { it.toRound().myScore })
+    println(input.total { it.toRoundFixing().toRound().myScore })
 }
 
-fun String.total(f: (String) -> Int): Int = lines().sumOf { f(it) }
-
-internal fun String.score(): Int = when (this) {
-    "A X" -> 4
-    "B X" -> 1
-    "C X" -> 7
-    "A Y" -> 8
-    "B Y" -> 5
-    "C Y" -> 2
-    "A Z" -> 3
-    "B Z" -> 9
-    "C Z" -> 6
-    else -> error("unrecognised input $this")
+internal fun String.toRound(): Round {
+    val (opponentChoiceStr, myChoiceStr) = split(" ")
+    return Round(
+        myChoice = myChoiceStr.toChoice(myChoices),
+        opponentChoice = opponentChoiceStr.toChoice(opponentChoices)
+    )
 }
 
-internal fun String.updatedScore(): Int {
-    val (opponentChoice, result) = split(" ").let { (opponentCode, resultCode) ->
-        opponentCode.toChoice(opponentChoices) to resultCode.toResult()
+internal fun String.toRoundFixing(): RoundFixing {
+    val (opponentChoiceStr, fixedResultStr) = split(" ")
+    return opponentChoiceStr.toChoice(opponentChoices) to fixedResultStr.toFixingResult()
+}
+
+internal data class Round(
+    val myChoice: Choice,
+    val opponentChoice: Choice
+)
+
+internal enum class Choice {
+    ROCK, SCISSORS, PAPER
+}
+
+internal enum class FixedResult {
+    WIN, LOSE, DRAW
+}
+
+internal typealias RoundFixing = Pair<Choice, FixedResult>
+
+internal fun RoundFixing.toRound(): Round {
+    val (opponentChoice, fixedResult) = this
+    val myChoice = when (fixedResult) {
+        DRAW -> opponentChoice
+        WIN -> results.values.first { it.loser == opponentChoice }.winner
+        LOSE -> results.values.first { it.winner == opponentChoice }.loser
     }
-    val myChoice = myChoice(opponentChoice, result)
-
-    return "${opponentChoice.toCode(opponentChoices)} ${myChoice.toCode(myChoices)}".score()
+    return Round(myChoice = myChoice, opponentChoice = opponentChoice)
 }
 
-private fun myChoice(opponentChoice: Choice, expectedResult: Result) = when (expectedResult) {
-    DRAW -> opponentChoice
-    WIN -> winner(opponentChoice)
-    LOSE -> loser(opponentChoice)
+private sealed interface Result {
+    object Draw : Result
+    data class NonDraw(
+        val winner: Choice,
+        val loser: Choice
+    ) : Result
 }
 
-private fun String.toResult() = when (this) {
+private val Round.result: Result
+    get() {
+        val (choice1, choice2) = this
+        return if (choice1 == choice2) Result.Draw
+        else results[choice1 vs choice2]
+            ?: results[choice2 vs choice1]
+            ?: error("unable to find result for $this")
+    }
+
+private val results = mapOf(
+    (ROCK vs PAPER) to Result.NonDraw(winner = PAPER, loser = ROCK),
+    (ROCK vs SCISSORS) to Result.NonDraw(winner = ROCK, loser = SCISSORS),
+    (SCISSORS vs PAPER) to Result.NonDraw(winner = SCISSORS, loser = PAPER),
+)
+
+private fun Result.scoreFor(choice: Choice) = when (this) {
+    is Result.Draw -> 3
+    is Result.NonDraw -> {
+        with(this) {
+            if (choice == winner) 6
+            else 0
+        }
+    }
+}
+
+internal val Round.myScore: Int get() = myChoice.score + result.scoreFor(myChoice)
+
+private val Choice.score: Int
+    get() = when (this) {
+        ROCK -> 1
+        PAPER -> 2
+        SCISSORS -> 3
+    }
+
+private infix fun Choice.vs(that: Choice): Round = Round(myChoice = this, opponentChoice = that)
+
+private fun String.toFixingResult() = when (this) {
     "X" -> LOSE
     "Y" -> DRAW
     "Z" -> WIN
@@ -49,8 +101,6 @@ private fun String.toResult() = when (this) {
 }
 
 private fun String.toChoice(map: Map<String, Choice>) = map[this] ?: error("unrecognised choice code: $this")
-
-private fun Choice.toCode(map: Map<String, Choice>) = map.reversed()[this] ?: error("unrecognised choice $this")
 
 private val opponentChoices = mapOf(
     "A" to ROCK,
@@ -64,22 +114,4 @@ private val myChoices = mapOf(
     "Z" to SCISSORS,
 )
 
-private enum class Result {
-    WIN, LOSE, DRAW
-}
-
-private enum class Choice {
-    ROCK, SCISSORS, PAPER
-}
-
-private val winnerMap = mapOf(
-    ROCK to PAPER,
-    SCISSORS to ROCK,
-    PAPER to SCISSORS
-)
-
-private fun winner(choice: Choice) = winnerMap[choice] ?: error("choice not found: $choice")
-
-private fun loser(choice: Choice) = winnerMap.reversed()[choice] ?: error("choice not found $choice")
-
-private fun <K, V> Map<K, V>.reversed() = entries.associate { (key, value) -> value to key }
+internal fun String.total(f: (String) -> Int): Int = lines().sumOf { f(it) }
