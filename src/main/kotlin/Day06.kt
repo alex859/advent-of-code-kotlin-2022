@@ -8,16 +8,10 @@ fun main() {
     println(input.startOfPacket(markerSize = 14))
 }
 
-internal fun String.startOfPacket(markerSize: Int, start: Int = 0): Int? {
-    if (length < markerSize) {
-        return null
-    }
-
-    return if (substring(0, markerSize).hasNoDuplicates()) {
-        markerSize + start
-    } else {
-        drop(1).startOfPacket(markerSize, start = start + 1)
-    }
+internal fun String.startOfPacket(markerSize: Int, start: Int = 0): Int? = when {
+    length < markerSize -> null
+    take(markerSize).hasNoDuplicates() -> markerSize + start
+    else -> drop(1).startOfPacket(markerSize, start = start + 1)
 }
 
 private fun String.hasNoDuplicates() = toSet().size == length
