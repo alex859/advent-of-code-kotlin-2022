@@ -13,27 +13,27 @@ class Day06Test {
         nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg | 10
         zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw | 11""")
     fun `start of packet position`(message: String, expected: Int) {
-        assertEquals(expected, message.getStartOfPacket(markerSize = 4))
+        assertEquals(expected, message.startOfPacket(markerSize = 4))
     }
     
     @Test
     fun `start of packet is right at the start`() {
         val message = "jpqmgbljsphdz"
         
-        assertEquals(4, message.getStartOfPacket(markerSize = 4))
+        assertEquals(4, message.startOfPacket(markerSize = 4))
     }
 
     @Test
     fun `marker starts after 1 character`() {
         val message = "jjpqmgbljsphdz"
 
-        assertEquals(5, message.getStartOfPacket(markerSize = 4))
+        assertEquals(5, message.startOfPacket(markerSize = 4))
     }
     @Test
     fun `marker starts after 3 character`() {
         val message = "ababpqmgbljsphdz"
 
-        assertEquals(6, message.getStartOfPacket(markerSize = 4))
+        assertEquals(6, message.startOfPacket(markerSize = 4))
     }
 
     @ParameterizedTest(name = "{0} -> {1}")
@@ -44,7 +44,7 @@ class Day06Test {
         nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg | 29
         zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw | 26""")
     fun `start of packet position with bigger marker size`(message: String, expected: Int) {
-        assertEquals(expected, message.getStartOfPacket(markerSize = 14))
+        assertEquals(expected, message.startOfPacket(markerSize = 14))
     }
 }
 
