@@ -155,6 +155,13 @@ class Day08Test {
             input.visibleTrees()
         )
     }
+    
+    @Test
+    fun `row scenic score`() {
+        val row = listOf(1, 2, 3)
+        
+        
+    }
 }
 
 
