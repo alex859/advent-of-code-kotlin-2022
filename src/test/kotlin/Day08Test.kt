@@ -3,6 +3,18 @@ import org.junit.jupiter.api.Test
 
 class Day08Test {
     @Test
+    fun `one tree is visible`() {
+        val map = """
+            1
+        """.trimIndent()
+
+        Assertions.assertEquals(
+            1,
+            map.visibleTreeCount()
+        )
+    }
+    
+    @Test
     fun `all trees on the edges are visible`() {
         val map = """
             12
@@ -17,7 +29,7 @@ class Day08Test {
 }
 
 private fun String.visibleTreeCount(): Int {
-    return 4
+    return lines().flatMap { it.toList() }.size
 }
 
 
