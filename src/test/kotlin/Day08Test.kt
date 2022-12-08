@@ -5,72 +5,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class Day08Test {
-//    @Test
-//    fun `one tree is visible`() {
-//        val map = """
-//            1
-//        """.trimIndent()
-//
-//        assertEquals(
-//            1,
-//            map.visibleTreeCount()
-//        )
-//    }
-//    
-//    @Test
-//    fun `all trees on the edges are visible`() {
-//        val map = """
-//            12
-//            12
-//        """.trimIndent()
-//        
-//        assertEquals(
-//            4,
-//            map.visibleTreeCount()
-//        )
-//    }
-//
-//    @Test
-//    fun `all trees are visible - also inside`() {
-//        val map = """
-//            132
-//            132
-//        """.trimIndent()
-//
-//        assertEquals(
-//            6,
-//            map.visibleTreeCount()
-//        )
-//    }
-//
-//    @Test
-//    fun `all trees are visible - more trees`() {
-//        val map = """
-//            132
-//            357
-//            132
-//        """.trimIndent()
-//
-//        assertEquals(
-//            9,
-//            map.visibleTreeCount()
-//        )
-//    }
-//
-//    @Test
-//    fun `tree in the middle is not visible`() {
-//        val map = """
-//            132
-//            307
-//            132
-//        """.trimIndent()
-//
-//        assertEquals(
-//            8,
-//            map.visibleTreeCount()
-//        )
-//    }
-    
     @Test
     fun `one tree is always visible`() {
         val row = listOf(1)
@@ -159,26 +93,68 @@ class Day08Test {
         }
 
     }
-}
+    
+   @Test
+   fun `read a column`() {
+       val input = """
+           30373
+           25512
+           65332
+           33549
+           35390
+       """.trimIndent()
+       val columns = input.columns()
+       
+       assertEquals(
+           listOf(3, 2, 6, 3, 3,),
+           columns[0]
+       )
+       assertEquals(
+           listOf(0, 5, 5, 3, 5,),
+           columns[1]
+       )
+       assertEquals(
+           listOf(3, 5, 3, 5, 3,),
+           columns[2]
+       )
+   }
 
-internal fun List<Int>.leftOf(i: Int) =  dropLast(size - i)
+    @Test
+    fun `read a row`() {
+        val input = """
+           30373
+           25512
+           65332
+           33549
+           35390
+       """.trimIndent()
+        val rows = input.rows()
 
-internal fun List<Int>.rightOf(i: Int) =  drop(i + 1)
-
-private fun List<Int>.visibleTrees(): Set<Int> {
-    if (size == 1) {
-        return setOf(0)
+        assertEquals(
+            listOf(3, 0, 3, 7, 3,),
+            rows[0]
+        )
+        assertEquals(
+            listOf(2, 5, 5, 1, 2,),
+            rows[1]
+        )
     }
-    val left = mapIndexed { i, tree ->
-        val leftOf = leftOf(i)
-        i to  if (leftOf.isEmpty()) true
-        else leftOf.count { it >= tree } == 0
-    }.filter { (_, visible) -> visible }.map { (i, _) -> i }
-    val right = mapIndexed { i, tree ->
-        val rightOf = rightOf(i)
-        i to if (rightOf.isEmpty()) true
-        else rightOf.count { it >= tree } == 0
-    }.filter { (_, visible) -> visible }.map { (i, _) -> i }
-    return left.toSet() + right.toSet()
+
+    @Test
+    fun `visible trees`() {
+        val input = """
+           30373
+           25512
+           65332
+           33549
+           35390
+       """.trimIndent()
+
+        assertEquals(
+            21,
+            input.visibleTrees()
+        )
+    }
 }
+
 
