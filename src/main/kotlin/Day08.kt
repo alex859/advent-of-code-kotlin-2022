@@ -1,11 +1,11 @@
 fun main() {
     val testInput = readInput("Day08_test.txt")
     check(testInput.visibleTrees() == 21)
-//    check(testInput.result2() == 24933642)
+    check(testInput.maxScore() == 8)
 
     val input = readInput("Day08.txt")
     println(input.visibleTrees())
-//    println(input.result2())
+    println(input.maxScore())
 }
 
 
@@ -51,4 +51,35 @@ internal fun List<Int>.visibleTrees(): Set<Int> {
         else rightOf.count { it >= tree } == 0
     }.filter { (_, visible) -> visible }.map { (i, _) -> i }
     return left.toSet() + right.toSet()
+}
+
+internal fun String.maxScore(): Int {
+    val rowCount = rows().count()
+    val colCount = columns().count()
+    return (0 until rowCount).flatMap { row ->
+        (0 until colCount).map { col ->
+            scenicScore(row, col)
+        }
+    }.max()
+}
+
+internal fun String.scenicScore(rowIndex: Int, colIndex: Int): Int {
+    val row = rows()[rowIndex]
+    val col = columns()[colIndex]
+    val height = rows()[rowIndex][colIndex]
+    val leftScore = row.leftOf(colIndex).reversed().scenicScoreForHeight(height)
+    val rightScore = row.rightOf(colIndex).scenicScoreForHeight(height)
+    val topScore = col.leftOf(rowIndex).reversed().scenicScoreForHeight(height)
+    val downScore = col.rightOf(rowIndex).scenicScoreForHeight(height)
+
+    return leftScore * rightScore * topScore * downScore
+}
+
+internal fun List<Int>.scenicScoreForHeight(height: Int): Int {
+    if (isEmpty()) {
+        return 0
+    }
+    val mapIndexed = mapIndexed { i, h -> i to h }
+    val index = mapIndexed.filter { (_, h) -> h >= height }.firstOrNull()?.first?:(size - 1)
+    return if (index == 0) 1 else index + 1
 }
