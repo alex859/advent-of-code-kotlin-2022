@@ -1,4 +1,5 @@
 
+
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Nested
@@ -91,7 +92,6 @@ class Day08Test {
                 trees.rightOf(2)
             )
         }
-
     }
     
    @Test
@@ -155,13 +155,108 @@ class Day08Test {
             input.visibleTrees()
         )
     }
-    
+
     @Test
-    fun `row scenic score`() {
-        val row = listOf(1, 2, 3)
-        
-        
+    fun `scenic score 1`() {
+        val input = """
+                30373
+                25512
+                65332
+                33549
+                35390
+            """.trimIndent()
+
+        assertEquals(
+            4,
+            input.scenicScore(rowIndex = 1, colIndex = 2)
+        )
     }
+
+    @Test
+    fun `scenic score 2`() {
+        val input = """
+                30373
+                25512
+                65332
+                33549
+                35390
+            """.trimIndent()
+
+        assertEquals(
+            8,
+            input.scenicScore(rowIndex = 3, colIndex = 2)
+        )
+    }
+
+    @Test
+    fun `scenic score overall`() {
+        val input = """
+                30373
+                25512
+                65332
+                33549
+                35390
+            """.trimIndent()
+
+        assertEquals(
+            8,
+            input.maxScore()
+        )
+    }
+
+    @Nested
+    inner class ScenicScore {
+        @Test
+        fun `scenic score for point 1`() {
+            val treesInDirection = listOf(5, 2)
+
+            assertEquals(
+                1,
+                treesInDirection.scenicScoreForHeight(5)
+            )
+        }
+
+        @Test
+        fun `scenic score for point 2`() {
+            val treesInDirection = listOf(3)
+
+            assertEquals(
+                1,
+                treesInDirection.scenicScoreForHeight(5)
+            )
+        }
+
+        @Test
+        fun `scenic score for point 3`() {
+            val treesInDirection = listOf(1, 2)
+
+            assertEquals(
+                2,
+                treesInDirection.scenicScoreForHeight(5)
+            )
+        }
+
+        @Test
+        fun `scenic score for point 5`() {
+            val treesInDirection = listOf(3, 5, 3)
+
+            assertEquals(
+                2,
+                treesInDirection.scenicScoreForHeight(5)
+            )
+        }
+
+        @Test
+        fun `scenic score for point 4`() {
+            val treesInDirection = emptyList<Int>()
+
+            assertEquals(
+                0,
+                treesInDirection.scenicScoreForHeight(5)
+            )
+        }
+    }
+
 }
 
 
