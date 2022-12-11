@@ -186,7 +186,7 @@ class Day09Test {
             input.readMovements()
         )
     }
+    
+    private fun p(left: Int, bottom: Int) = Position(left = left, bottom = bottom)
 }
-
-internal fun p(left: Int, bottom: Int) = Position(left = left, bottom = bottom)
 
